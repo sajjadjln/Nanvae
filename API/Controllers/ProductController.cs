@@ -18,9 +18,9 @@ namespace API.Controllers
     {
         private readonly IProductRepository _repo;
 
-        public ProductController(IProductRepository Repo)
+        public ProductController(IProductRepository repo)
         {
-            _repo = Repo;
+            _repo = repo;
         }
 
         [HttpGet]
@@ -34,6 +34,6 @@ namespace API.Controllers
         {
             return await _repo.GetProductById(id);
         }
-
+        
     }
 }
