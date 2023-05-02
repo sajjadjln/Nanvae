@@ -14,6 +14,7 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+
     public class ProductController : ControllerBase
     {
         private readonly IProductRepository _repo;
@@ -34,6 +35,6 @@ namespace API.Controllers
         {
             return await _repo.GetProductById(id);
         }
-        
+
     }
 }
