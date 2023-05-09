@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
-namespace API
+namespace API.Middleware
 {
 public class NotFoundMiddleware
 {
