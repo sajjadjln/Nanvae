@@ -27,10 +27,10 @@ export default function ProductCard(props) {
       />
       <CardContent>
         <Typography gutterBottom color='secondary' variant='h5'>
-          {props.product.price}
+          ${props.product.price}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {props.product.brand} / {props.product.type}
+          {props.product.productBrand} / {props.product.productType}
         </Typography>
       </CardContent>
       <CardActions>
