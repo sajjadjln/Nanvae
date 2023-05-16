@@ -1,20 +1,20 @@
 import Typography from '@mui/material/Typography';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
 import { useState } from 'react';
 import { Grid, Table, TableContainer, TableRow } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
+import agent from '../../App/api/agent';
 
 export default function ProductDetails() {
     const { id } = useParams();
-    const [product, setProduct] = useState([]);
+    const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        axios.get(`https://localhost:5002/api/Product/${id}`)
-            .then(response => setProduct(response.data))
+        agent.catalog.details(id)
+            .then(response => setProduct(response))
             .catch(error => console.log(error))
             .finally(() => setLoading(false))
     }, [id]);
@@ -25,13 +25,7 @@ export default function ProductDetails() {
             </Typography>
         );
     }
-    if (!product) {
-        return (
-            <Typography variant="h2">
-                Product not found
-            </Typography>
-        );
-    }
+    if (product == null) return <Typography variant="h2">Product not found</Typography>
     return (
             <Grid container spacing={6}>
                 <Grid item xs={6}>
