@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using API.Errors;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 
 namespace API.Controllers
@@ -39,6 +40,18 @@ namespace API.Controllers
         public ActionResult GetNotFoundRequest(int id)
         {
             return Ok(); // passing string instead of int
+        }
+        [HttpGet("auth")]
+        public ActionResult<string> GetUnauthorize()
+        {
+            return Unauthorized(new ApiResponse(401));
+        }
+        [HttpGet("validation-error")]
+        public ActionResult<string> GetValidationError()
+        {
+            ModelState.AddModelError("Name", "Name is required");
+            ModelState.AddModelError("Email", "Email is required");
+            return ValidationProblem();
         }
     }
 }
