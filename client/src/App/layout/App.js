@@ -4,36 +4,41 @@ import Header from "../../App/layout/Header";
 import { CssBaseline } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import { useState } from 'react';
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import { Route, Routes } from "react-router-dom";
 import HomePage from "../../Features/home/HomePage";
 import ProductDetails from "../../Features/Catalog/ProductDetails";
 import AboutPage from "../../Features/about/aboutPage";
 import ContactPage from "../../Features/contact/ContactPage";
+
 function App() {
-  const [darkMode, setDarkmode] = useState(false);
-  const pallateType = darkMode ? "dark" : "light";
+  const [darkMode, setDarkMode] = useState(false);
+  const paletteType = darkMode ? "dark" : "light";
   const theme = createTheme({
     palette: {
-      mode: pallateType,
+      mode: paletteType,
       background: {
-        default: pallateType === "light" ? "#eaeaea" : "#121212"
+        default: paletteType === "light" ? "#eaeaea" : "#121212"
       }
     }
   });
+
   function handleThemeChange() {
-    setDarkmode(!darkMode);
+    setDarkMode(!darkMode);
   }
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline></CssBaseline>
-      <Header darkMode={darkMode} handleThemeChange={handleThemeChange}></Header>
+      <ToastContainer position='bottom-right' theme='colored'/>
+      <CssBaseline />
+      <Header darkMode={darkMode} handleThemeChange={handleThemeChange} />
       <Container>
         <Routes>
-          <Route exact path='/' Component={HomePage} />
-          <Route exact path='/Catalog' Component={Catalog} />
-          <Route exact path='/Catalog/:id' Component={ProductDetails} />
-          <Route exact path='/About' Component={AboutPage} />
-          <Route exact path='/Contact' Component={ContactPage} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/Catalog" element={<Catalog />} />
+          <Route path="/Catalog/:id" element={<ProductDetails />} />
+          <Route path="/About" element={<AboutPage />} />
+          <Route path="/Contact" element={<ContactPage />} />
         </Routes>
       </Container>
     </ThemeProvider>
