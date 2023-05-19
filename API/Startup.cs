@@ -7,6 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using API.Helpers;
 using API.Middleware;
 using API.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using API.Errors;
 
 namespace API
 {
