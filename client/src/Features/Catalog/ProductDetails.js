@@ -7,6 +7,8 @@ import Divider from '@mui/material/Divider';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import agent from '../../App/api/agent';
+import NotFound from '../../App/errors/NotFound';
+import LoadingComponent from '../../App/layout/LoadingComponent';
 
 export default function ProductDetails() {
     const { id } = useParams();
@@ -20,12 +22,10 @@ export default function ProductDetails() {
     }, [id]);
     if (loading) {
         return (
-            <Typography variant="h2">
-                Loading...
-            </Typography>
+            <LoadingComponent message='Loading product..'/>
         );
     }
-    if (product == null) return <Typography variant="h2">Product not found</Typography>
+    if (product == null) return <NotFound/>
     return (
             <Grid container spacing={6}>
                 <Grid item xs={6}>
