@@ -11,6 +11,8 @@ import HomePage from "../../Features/home/HomePage";
 import ProductDetails from "../../Features/Catalog/ProductDetails";
 import AboutPage from "../../Features/about/aboutPage";
 import ContactPage from "../../Features/contact/ContactPage";
+import ServerError from "../errors/ServerError";
+import NotFound from "../errors/NotFound";
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -27,9 +29,10 @@ function App() {
   function handleThemeChange() {
     setDarkMode(!darkMode);
   }
+
   return (
     <ThemeProvider theme={theme}>
-      <ToastContainer position='bottom-right' theme='colored'/>
+      <ToastContainer position='bottom-right' theme='colored' />
       <CssBaseline />
       <Header darkMode={darkMode} handleThemeChange={handleThemeChange} />
       <Container>
@@ -39,6 +42,8 @@ function App() {
           <Route path="/Catalog/:id" element={<ProductDetails />} />
           <Route path="/About" element={<AboutPage />} />
           <Route path="/Contact" element={<ContactPage />} />
+          <Route path="/server-error" element={<ServerError />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Container>
     </ThemeProvider>
