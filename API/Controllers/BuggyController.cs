@@ -36,7 +36,7 @@ namespace API.Controllers
         {
             return BadRequest(new ApiResponse(400));
         }
-        [HttpGet("badrequest/{id}")]
+        [HttpPost("badrequest/{id}")]
         public ActionResult GetNotFoundRequest(int id)
         {
             return Ok(); // passing string instead of int
@@ -46,7 +46,7 @@ namespace API.Controllers
         {
             return Unauthorized(new ApiResponse(401));
         }
-        [HttpGet("validation-error")]
+        [HttpPost("validation-error")]
         public ActionResult<string> GetValidationError()
         {
             ModelState.AddModelError("Name", "Name is required");
