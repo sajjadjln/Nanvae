@@ -15,5 +15,6 @@ namespace Core.Entities
         public int ProductBrandId {get; set;}
         public Decimal Price { get; set; }
         public string PictureUrl { get; set; }
+        public int QuantityInStock { get; set; }
     }
 }
