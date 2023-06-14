@@ -10,6 +10,7 @@ using API.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using API.Errors;
+using Microsoft.AspNetCore.Http;
 
 namespace API
 {
@@ -33,6 +34,10 @@ namespace API
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddApplicationServices();
             services.AddSwaggerDocumentation();
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,18 +46,18 @@ namespace API
             app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseStatusCodePagesWithReExecute("/errors/{0}"); // 0 is the place holder for the status code
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseStaticFiles(); // for the images
-            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000"));
+            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:3000"));
             app.UseAuthorization();
             app.UseSwaggerDocumentation();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
-//          app.UseMiddleware<NotFoundMiddleware>();
+            //          app.UseMiddleware<NotFoundMiddleware>();
         }
     }
 }
