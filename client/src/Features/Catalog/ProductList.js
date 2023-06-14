@@ -13,7 +13,6 @@ const useStyles = styled((theme) => ({
 
 export default function ProductList(props) {
   const classes = useStyles();
-
   return (
     <div className={classes.root}>
       <Grid container spacing={4}>

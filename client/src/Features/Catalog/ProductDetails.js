@@ -26,6 +26,7 @@ export default function ProductDetails() {
         );
     }
     if (product == null) return <NotFound/>
+    console.log(product.pictureUrl); // Add this line to check the items array and the pictureUrl property
     return (
             <Grid container spacing={6}>
                 <Grid item xs={6}>

@@ -15,8 +15,7 @@ namespace Infrastructure.Data
         }
 
         public DbSet<Product> Products { get; set; }
-        public DbSet<ProductBrands> ProductBrands { get; set; }
-        public DbSet<ProductTypes> ProductTypes { get; set; }
+        public DbSet<Basket> Baskets { get; set; }
         override protected void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
