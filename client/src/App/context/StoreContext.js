@@ -12,7 +12,8 @@ export default function useStoreContext() {
 
 export function StoreProvider({ children }) {
   const [basket, setBasket] = useState(null);
-  function removeItem(productId,quantity) {
+
+  function removeItem(productId, quantity) {
     if (!basket) return;
     const items = [...basket.items];
     const itemIndex = items.findIndex((item) => item.productId === productId);
