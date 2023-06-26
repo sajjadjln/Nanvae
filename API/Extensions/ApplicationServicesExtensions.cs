@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.Errors;
 using Core.Interfaces;
-using Infrastructure.Repositories;
+using Infrastructure.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 

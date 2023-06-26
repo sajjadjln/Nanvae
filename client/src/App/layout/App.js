@@ -14,28 +14,30 @@ import ContactPage from "../../Features/contact/ContactPage";
 import ServerError from "../errors/ServerError";
 import NotFound from "../errors/NotFound";
 import BasketPage from "../../Features/basket/BasketPage";
-import useStoreContext from "../context/StoreContext";
 import { getCookie } from '../util/util';
 import agent from '../api/agent';
 import LoadingComponent from "./LoadingComponent";
 import CheckOutPage from "../../Features/checkout/CheckOutPage";
+import { useAppDispatch } from "../store/configureStore";
+import { setBasket } from "../../Features/basket/basketSlice";
 
 function App() {
-  const {setBasket} = useStoreContext();
-  const[loading, setLoading] = useState(true);
+  const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const buyerId = getCookie('buyerId')
-    if(buyerId)
-    {
+    const buyerId = getCookie('buyerId');
+    if (buyerId) {
       agent.basket.get()
-        .then(basket => setBasket(basket))
+        .then(basket => dispatch(setBasket(basket)))
         .catch((error) => console.log(error))
         .finally(() => setLoading(false));
-    }else{
+    } else {
       setLoading(false);
     }
-  }, [setBasket]);
+  }, [dispatch]);
+
+
   const [darkMode, setDarkMode] = useState(false);
   const paletteType = darkMode ? "dark" : "light";
   const theme = createTheme({
@@ -50,7 +52,7 @@ function App() {
   function handleThemeChange() {
     setDarkMode(!darkMode);
   }
-  if(loading) return <LoadingComponent message="Initializing app ..."></LoadingComponent>
+  if (loading) return <LoadingComponent message="Initializing app ..."></LoadingComponent>
   return (
     <ThemeProvider theme={theme}>
       <ToastContainer position='bottom-right' theme='colored' />

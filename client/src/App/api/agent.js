@@ -2,6 +2,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 
+
 axios.defaults.baseURL = 'http://localhost:5002/api/';
 axios.defaults.withCredentials = true;
 const responseBody = (response) => response.data;
@@ -12,7 +13,6 @@ axios.interceptors.response.use(
   },
   (error) => {
     const { data, status } = error.response;
-    console.log(data); // Log the data object to inspect its properties
     switch (status) {
       case 400:
         if (data.errors) {
@@ -43,16 +43,18 @@ axios.interceptors.response.use(
   }
 );
 
+
 const requests = {
-  get: (url) => axios.get(url).then(responseBody),
+  get: (url,params) => axios.get(url,{params}).then(responseBody),
   post: (url, body) => axios.post(url, body).then(responseBody),
   put: (url, body) => axios.put(url, body).then(responseBody),
   del: (url) => axios.delete(url).then(responseBody),
 };
 
 const catalog = {
-  list: () => requests.get('/Product'),
+  list: (params) => requests.get('/Product',params),
   details: (id) => requests.get(`/Product/${id}`),
+  fetchFilter: () => requests.get('/Product/filters'),
 };
 
 const TestErrors = {
