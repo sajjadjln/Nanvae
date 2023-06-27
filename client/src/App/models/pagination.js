@@ -1,8 +1,15 @@
-class PaginatedResponse {
-    constructor(items, metaData) {
-      this.items = items;
-      this.metaData = metaData;
-    }
+export class PaginatedResponse {
+  constructor(items, metaData) {
+    this.items = items;
+    this.metaData = metaData;
   }
+}
 
-module.exports = PaginatedResponse;
+export const metaData = {
+  currentPage: 1,
+  pageSize: 10,
+  totalPages: 5,
+  totalCount: 50,
+};
+
+

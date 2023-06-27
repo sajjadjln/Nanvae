@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
-
+import { PaginatedResponse } from '../models/pagination';
 
 
 axios.defaults.baseURL = 'http://localhost:5002/api/';
@@ -9,7 +9,15 @@ const responseBody = (response) => response.data;
 
 axios.interceptors.response.use(
   (response) => {
-    return new Promise((resolve) => setTimeout(() => resolve(response), 500));
+    return new Promise((resolve) => setTimeout(() => resolve(response), 500))
+      .then((response) => {
+        const pagination = response.headers['pagination'];
+        if (pagination) {
+          response.data = new PaginatedResponse(response.data, JSON.parse(pagination));
+          console.log(response);
+        }
+        return response;
+      });
   },
   (error) => {
     const { data, status } = error.response;
