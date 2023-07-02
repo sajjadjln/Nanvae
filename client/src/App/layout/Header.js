@@ -12,6 +12,7 @@ import { Badge } from '@mui/material';
 import { ShoppingCart } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { useAppSelector } from '../store/configureStore';
+import SignedInMenu from './SignedInMenu';
 const midLinks = [
   { title: 'About', path: '/about' },
   { title: 'Contact', path: '/contact' },
@@ -35,9 +36,10 @@ const navStyle = [
   }
 ]
 export default function Header(props) {
+  const { user } = useAppSelector(state => state.account);
   const { darkMode, handleThemeChange } = props;
-  const {basket} = useAppSelector(state => state.basket);
-  const itemCount = basket?.items.reduce((sub,item) => sub + item.quantity,0)
+  const { basket } = useAppSelector(state => state.basket);
+  const itemCount = basket?.items.reduce((sub, item) => sub + item.quantity, 0)
   return (
     <AppBar position="static" sx={{ mb: 4 }}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -65,18 +67,22 @@ export default function Header(props) {
               <ShoppingCart />
             </Badge>
           </IconButton>
-          <List sx={{ display: 'flex' }}>
-            {rightLinks.map(({ title, path }) => (
-              <ListItem
-                component={NavLink}
-                to={path}
-                key={path}
-                sx={navStyle}
-              >
-                {title.toUpperCase()}
-              </ListItem>
-            ))}
-          </List>
+          {user ? (
+            <SignedInMenu />) :
+            <List sx={{ display: 'flex' }}>
+              {rightLinks.map(({ title, path }) => (
+                <ListItem
+                  component={NavLink}
+                  to={path}
+                  key={path}
+                  sx={navStyle}
+                >
+                  {title.toUpperCase()}
+                </ListItem>
+              ))}
+            </List>
+          }
+
         </Box>
       </Toolbar>
     </AppBar>

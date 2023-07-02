@@ -15,12 +15,12 @@ namespace API.RequestHelpers
                 TotalCount = count,
                 PageSize = pageSize,
                 CurrentPage = pageNumber,
-                TotalPages = (int) System.Math.Ceiling(count / (double) pageSize)
+                TotalPages = (int)System.Math.Ceiling(count / (double)pageSize)
             };
             AddRange(items);
         }
         public MetaData MetaData { get; set; }
-        
+
         public static PagedList<T> ToPagedList(IQueryable<T> query, int pageNumber, int pageSize)
         {
             var count = query.Count();

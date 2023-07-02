@@ -3,7 +3,7 @@ import { Container, createTheme } from "@mui/material";
 import Header from "../../App/layout/Header";
 import { CssBaseline } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { Route, Routes } from "react-router-dom";
@@ -14,28 +14,32 @@ import ContactPage from "../../Features/contact/ContactPage";
 import ServerError from "../errors/ServerError";
 import NotFound from "../errors/NotFound";
 import BasketPage from "../../Features/basket/BasketPage";
-import { getCookie } from '../util/util';
-import agent from '../api/agent';
 import LoadingComponent from "./LoadingComponent";
 import CheckOutPage from "../../Features/checkout/CheckOutPage";
 import { useAppDispatch } from "../store/configureStore";
-import { setBasket } from "../../Features/basket/basketSlice";
+import Register from '../../Features/account/register';
+import Login from '../../Features/account/login';
+import { fetchCurrentUser } from "../../Features/account/accountSlice";
+import { fetchBasketAsync } from "../../Features/basket/basketSlice";
+import PrivateRoute from "./PrivateRoute";
 
 function App() {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const buyerId = getCookie('buyerId');
-    if (buyerId) {
-      agent.basket.get()
-        .then(basket => dispatch(setBasket(basket)))
-        .catch((error) => console.log(error))
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
+  const initApp = useCallback(async () => {
+    try {
+     dispatch(fetchCurrentUser());
+     dispatch(fetchBasketAsync());
+    } catch (error) {
+      console.log(error);
     }
   }, [dispatch]);
+  useEffect(() => {
+    initApp().then(() => {
+      setLoading(false);
+    })
+  }, [initApp]);
 
 
   const [darkMode, setDarkMode] = useState(false);
@@ -67,7 +71,9 @@ function App() {
           <Route path="/Contact" element={<ContactPage />} />
           <Route path="/server-error" element={<ServerError />} />
           <Route path="/basket" element={<BasketPage />} />
-          <Route path="/checkout" element={<CheckOutPage />} />
+          <PrivateRoute path="/checkout" element={<CheckOutPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Container>

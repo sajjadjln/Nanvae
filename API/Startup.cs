@@ -9,8 +9,14 @@ using API.Middleware;
 using API.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Text;
 using API.Errors;
+using API.Services;
+using Core.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 
 namespace API
 {
@@ -38,6 +44,29 @@ namespace API
             {
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+            services.AddCors();
+            services.AddIdentityCore<User>(opt => {
+                opt.User.RequireUniqueEmail = true;
+            })
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ProductContext>();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options => {
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey =
+                            new SymmetricSecurityKey(Encoding.UTF8
+                                .GetBytes(_config["JWTSettings:TokenKey"])),
+                        ValidIssuer = _config["TokenIssuer"],
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateLifetime = true
+                    };
+                });
+            
+            services.AddAuthorization();
+            services.AddScoped<TokenService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +80,7 @@ namespace API
             app.UseRouting();
             app.UseStaticFiles(); // for the images
             app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:3000"));
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseSwaggerDocumentation();
             app.UseEndpoints(endpoints =>

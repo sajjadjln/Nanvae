@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Core.Entities;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,8 +26,9 @@ namespace API
                 try
                 {
                     var context = services.GetRequiredService<ProductContext>();
+                    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
                     await context.Database.MigrateAsync();
-                    await StoreContextSeed.SeedAsync(context,loggerFactory);
+                    await StoreContextSeed.SeedAsync(context,loggerFactory,userManager);
                 }
                 catch (Exception ex)
                 {
@@ -33,7 +36,7 @@ namespace API
                     logger.LogError(ex, "An error occurred during migration");
                 }
             }
-            host.Run();
+             await host.RunAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

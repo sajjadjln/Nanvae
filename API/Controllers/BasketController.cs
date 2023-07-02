@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Dtos;
+using API.Extensions;
 using Core.Entities;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
@@ -22,47 +23,36 @@ namespace API.Controllers
         [HttpGet(Name = "GetBasket")]
         public async Task<ActionResult<BasketDto>> GetBasket()
         {
-            var basket = await RetrieveBasket();
+            var basket = await RetrieveBasket(GetBuyerId());
             if (basket == null)
             {
                 return NotFound();
             }
 
-            return MapBasketDto(basket);
+            return basket.MapBasketToDto();
         }
 
-        private BasketDto MapBasketDto(Basket basket)
+        private async Task<Basket> RetrieveBasket(string buyerId)
         {
-            return new BasketDto()
+            if (string.IsNullOrEmpty(buyerId))
             {
-                Id = basket.Id,
-                BuyerId = basket.BuyerId,
-                Items = basket.Items.Select(item => new BasketItemDto
-                {
-                    productId = item.ProductId, // Update property name to ProductId
-                    Name = item.Product.Name,
-                    Price = item.Product.Price,
-                    PictureUrl = item.Product.PictureUrl,
-                    Quantity = item.Quantity,
-                    ProductBrand = item.Product.ProductBrand,
-                    ProductType = item.Product.ProductType
-                }).ToList()
-            };
-        }
-
-
-        private async Task<Basket> RetrieveBasket()
-        {
+                Response.Cookies.Delete("buyerId");
+                return null;
+            }
             return await _context.Baskets
                 .Include(i => i.Items)
                 .ThenInclude(p => p.Product)
-                .FirstOrDefaultAsync(X => X.BuyerId == Request.Cookies["buyerId"]);
+                .FirstOrDefaultAsync(X => X.BuyerId == buyerId);
+        }
+        private string GetBuyerId()
+        {
+            return User.Identity?.Name ?? Request.Cookies["buyerId"];
         }
 
         [HttpPost]
         public async Task<ActionResult<BasketDto>> AddItemToBasket(int productId, int quantity)
         {
-            var basket = await RetrieveBasket();
+            var basket = await RetrieveBasket(GetBuyerId());
             if (basket == null) basket = CreateBasket();
             var product = await _context.Products.FindAsync(productId);
             if (product == null)
@@ -72,7 +62,7 @@ namespace API.Controllers
 
             basket.AddItem(product, quantity);
             var result = await _context.SaveChangesAsync() > 0;
-            if (result) return CreatedAtRoute("GetBasket", MapBasketDto(basket));
+            if (result) return CreatedAtRoute("GetBasket", basket.MapBasketToDto());
             //if(result) return StatusCode(201);
             return BadRequest(new ProblemDetails() { Title = "Problem adding item to basket" });
             // in order to cookie be allowed in http i changed the"applicationUrl": "http://localhost:5002;https://localhost:5000", in the appSettings.development.json
@@ -82,14 +72,19 @@ namespace API.Controllers
 
         private Basket CreateBasket()
         {
-            var buyerId = Guid.NewGuid().ToString();
-            var cookieOptions = new CookieOptions()
+            var buyerId = User.Identity?.Name;
+            if (string.IsNullOrEmpty(buyerId))
             {
-                Secure = false,
-                IsEssential = true,
-                Expires = DateTime.Now.AddDays(30)
-            };
-            Response.Cookies.Append("buyerId", buyerId, cookieOptions);
+                buyerId = Guid.NewGuid().ToString();
+                var cookieOptions = new CookieOptions()
+                {
+                    Secure = false,
+                    IsEssential = true,
+                    Expires = DateTime.Now.AddDays(30)
+                };
+                Response.Cookies.Append("buyerId", buyerId, cookieOptions);
+            }
+
             var basket = new Basket { BuyerId = buyerId };
             _context.Baskets.Add(basket);
             return basket;
@@ -99,7 +94,7 @@ namespace API.Controllers
         [HttpDelete]
         public async Task<ActionResult> RemoveBasketItem(int productId, int quantity)
         {
-            var basket = await RetrieveBasket();
+            var basket = await RetrieveBasket(GetBuyerId());
             if (basket == null) return NotFound();
             basket.RemoveItem(productId, quantity);
             var result = await _context.SaveChangesAsync() > 0;
