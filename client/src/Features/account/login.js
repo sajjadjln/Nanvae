@@ -18,6 +18,7 @@ import { signInUser } from './accountSlice';
 const defaultTheme = createTheme();
 //! not returning unauthorized toast when entering wrong password for login
 //! the basket error on the console
+//! navigating from checkout to login still wont work
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
