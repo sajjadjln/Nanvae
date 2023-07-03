@@ -4,13 +4,14 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Core.Entities;
+using Core.Entities.OrderAggregate;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data
 {
-    public class ProductContext : IdentityDbContext<User>
+    public class ProductContext : IdentityDbContext<User, Role, int>
     {
         public ProductContext(DbContextOptions options) : base(options)
         {
@@ -18,14 +19,21 @@ namespace Infrastructure.Data
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Basket> Baskets { get; set; }
+        public DbSet<Order> Orders { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            var memberRole = new IdentityRole { Name = "Member", NormalizedName = "MEMBER" };
-            var adminRole = new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" };
+            builder.Entity<User>()
+                .HasOne(a => a.Address)
+                .WithOne()
+                .HasForeignKey<UserAddress>(a => a.Id)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<IdentityRole>().HasData(memberRole, adminRole);
+            var memberRole = new Role { Id = 1, Name = "Member", NormalizedName = "MEMBER" };
+            var adminRole = new Role { Id = 2, Name = "Admin", NormalizedName = "ADMIN" };
+
+            builder.Entity<Role>().HasData(memberRole, adminRole);
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
 
