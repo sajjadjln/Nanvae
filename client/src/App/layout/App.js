@@ -15,13 +15,13 @@ import ServerError from "../errors/ServerError";
 import NotFound from "../errors/NotFound";
 import BasketPage from "../../Features/basket/BasketPage";
 import LoadingComponent from "./LoadingComponent";
-import CheckOutPage from "../../Features/checkout/CheckOutPage";
-import { useAppDispatch } from "../store/configureStore";
+import { useAppDispatch } from '../store/configureStore';
 import Register from '../../Features/account/register';
 import Login from '../../Features/account/login';
 import { fetchCurrentUser } from "../../Features/account/accountSlice";
 import { fetchBasketAsync } from "../../Features/basket/basketSlice";
-import PrivateRoute from "./PrivateRoute";
+import CheckOutPage from "../../Features/checkout/CheckOutPage";
+import PrivateRoute from './PrivateRoute';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -71,7 +71,7 @@ function App() {
           <Route path="/Contact" element={<ContactPage />} />
           <Route path="/server-error" element={<ServerError />} />
           <Route path="/basket" element={<BasketPage />} />
-          <PrivateRoute path="/checkout" element={<CheckOutPage />} />
+          <Route path="/checkout" element={<PrivateRoute><CheckOutPage /></PrivateRoute>} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="*" element={<NotFound />} />

@@ -1,25 +1,19 @@
-import { Route } from 'react-router-dom';
-import { Redirect } from 'react-router';
-import { useAppSelector } from '../store/configureStore';
-import { Component } from 'react';
+import { Navigate, useLocation } from "react-router-dom";
+import { useAppSelector } from "../store/configureStore";
 
-export default function PrivateRoute({ component, ...rest }) {
-    const {user} = useAppSelector(state => state.account);
-    return (
-      <Route
-        {...rest}
-        render={props =>
-          user ? (
-            <Component {...props}/>
-          ) : (
-            <Redirect
-              to={{
-                pathname: "/login",
-                state: { from: props.location }
-              }}
-            />
-          )
-        }
-      />
-    );
-  }
+const PrivateRoute = ({ children }) => {
+  const { user } = useAppSelector((state) => state.account);
+  const location = useLocation();
+
+  return user ? (
+    children
+  ) : (
+    <Navigate
+      replace
+      to={{ pathname: "/login" }}
+      state={{ from: location.pathname }}
+    />
+  );
+};
+
+export default PrivateRoute;
