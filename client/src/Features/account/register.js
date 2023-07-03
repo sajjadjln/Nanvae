@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 import Paper from '@mui/material/Paper';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -14,7 +14,7 @@ import { LoadingButton } from '@mui/lab';
 import agent from '../../App/api/agent';
 import { toast } from 'react-toastify';
 
-const defaultTheme = createTheme();
+
 
 export default function Register() {
     const history = useNavigate();
@@ -44,7 +44,7 @@ export default function Register() {
     const [loading] = React.useState(false); // Added loading state
 
     return (
-        <ThemeProvider theme={defaultTheme}>
+
             <Container
                 component={Paper}
                 maxWidth="sm"
@@ -121,6 +121,6 @@ export default function Register() {
                     </Grid>
                 </Box>
             </Container>
-        </ThemeProvider>
+
     );
 }

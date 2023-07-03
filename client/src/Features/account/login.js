@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 import Paper from '@mui/material/Paper';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -15,7 +15,7 @@ import { useDispatch } from 'react-redux';
 import { signInUser } from './accountSlice';
 
 
-const defaultTheme = createTheme();
+
 //! not returning unauthorized toast when entering wrong password for login
 //! the basket error on the console
 //! navigating from checkout to login still wont work
@@ -33,7 +33,6 @@ export default function Login() {
 
   }
   return (
-    <ThemeProvider theme={defaultTheme}>
       <Container component={Paper} maxWidth="sm" sx={{display:'flex' , flexDirection:'column', alignItems:'center', p:4}}>
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
@@ -82,6 +81,5 @@ export default function Login() {
             </Grid>
           </Box>
       </Container>
-    </ThemeProvider>
   );
 }
