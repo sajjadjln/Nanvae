@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Button, Paper, Step, StepLabel, Stepper, Typography } from "@mui/material";
 import AddressForm from "./AddressForm";
 import PaymentForm from "./PaymentForm";
 import Review from "./Review";
 import { FormProvider, useForm } from 'react-hook-form';
+import agent from "../../App/api/agent";
+import { useAppDispatch } from "../../App/store/configureStore";
+import { clearBasket } from "../basket/basketSlice";
+import { LoadingButton } from '@mui/lab';
 
 const steps = ["Shipping address", "Review your order", "Payment details"];
 
@@ -21,13 +25,38 @@ function getStepContent(step) {
 }
 
 export default function CheckoutPage() {
+    const [orderNumber, setOrderNumber] = useState(0);
     const [activeStep, setActiveStep] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const dispatch = useAppDispatch();
     const methods = useForm();
-    const handleNext = (data) => {
-        if (activeStep === 0) {
-            console.log(data);
+    useEffect(() => {
+        agent.account.fetchAddresses()
+            .then(response => {
+                if (response) {
+                    methods.reset({ ...methods.getValues(), ...response, saveAddress: false })
+                }
+            })
+    },[methods]);
+    const handleNext = async (data) => {
+
+        const { nameOnCard, SaveAddress, ...shippingAddress } = data;
+
+        if (activeStep === steps.length - 1) {
+            setLoading(true);
+            try {
+                const orderNumber = await agent.orders.create({ SaveAddress, shippingAddress });
+                setOrderNumber(orderNumber);
+                setActiveStep(activeStep + 1)
+                dispatch(clearBasket());
+                setLoading(false);
+            } catch (error) {
+                console.log(error);
+                setLoading(false);
+            }
+        } else {
+            setActiveStep((activeStep) => activeStep + 1);
         }
-        setActiveStep((activeStep) => activeStep + 1)
     };
     const handleBack = () => setActiveStep((activeStep) => activeStep - 1);
 
@@ -51,7 +80,7 @@ export default function CheckoutPage() {
                                 Thank you for your order.
                             </Typography>
                             <Typography variant="subtitle1">
-                                Your order number is #2222. We have not emailed your order confirmation,
+                                Your order number is #{orderNumber}. We have not emailed your order confirmation,
                                 and will not send you an update when your order has shipped as this is a fake store!
                             </Typography>
                         </>
@@ -64,9 +93,9 @@ export default function CheckoutPage() {
                                         Back
                                     </Button>
                                 )}
-                                <Button variant="contained" type='submit' sx={{ mt: 3, ml: 1 }}>
+                                <LoadingButton loading={loading} variant="contained" type='submit' sx={{ mt: 3, ml: 1 }}>
                                     {activeStep === steps.length - 1 ? "Place order" : "Next"}
-                                </Button>
+                                </LoadingButton>
                             </Box>
                         </form>
                     )}

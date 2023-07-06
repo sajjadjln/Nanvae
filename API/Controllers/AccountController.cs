@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Dtos;
@@ -83,6 +84,15 @@ namespace API.Controllers
                 Email = user.Email,
                 Basket = userBasket?.MapBasketToDto()
             };
+        }
+        [Authorize]
+        [HttpGet("savedAddress")]
+        public async Task<ActionResult<UserAddress>> GetSavedAddress()
+        {
+            return await _userManager.Users
+                .Where(x => x.UserName == User.Identity.Name)
+                .Select(x => x.Address)
+                .FirstOrDefaultAsync();
         }
         private async Task<Basket> RetrieveBasket(string buyerId)
         {

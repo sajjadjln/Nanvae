@@ -86,36 +86,37 @@ namespace API.Controllers
             _context.Baskets.Remove(basket);
             if (orderDto.SaveAddress)
             {
-                var user = await _context.Users
+                 var user = await _context.Users
                     .Include(u => u.Address) // Include the Address entity
                     .FirstOrDefaultAsync(x => x.UserName == User.Identity.Name);
 
-                if (user.Address == null)
-                {
-                    user.Address = new UserAddress
-                    {
-                        FullName = orderDto.ShippingAddress.FullName,
-                        Address1 = orderDto.ShippingAddress.Address1,
-                        Address2 = orderDto.ShippingAddress.Address2,
-                        City = orderDto.ShippingAddress.City,
-                        State = orderDto.ShippingAddress.State,
+                // if (user.Address == null)
+                // {
+                     var address = new UserAddress
+                     {
+                         FullName = orderDto.ShippingAddress.FullName,
+                         Address1 = orderDto.ShippingAddress.Address1,
+                         Address2 = orderDto.ShippingAddress.Address2,
+                         City = orderDto.ShippingAddress.City,
+                         State = orderDto.ShippingAddress.State,
                         Zip = orderDto.ShippingAddress.Zip,
                         Country = orderDto.ShippingAddress.Country
                     };
-                }
-                else
-                {
-                    // Update existing address
-                    user.Address.FullName = orderDto.ShippingAddress.FullName;
-                    user.Address.Address1 = orderDto.ShippingAddress.Address1;
-                    user.Address.Address2 = orderDto.ShippingAddress.Address2;
-                    user.Address.City = orderDto.ShippingAddress.City;
-                    user.Address.State = orderDto.ShippingAddress.State;
-                    user.Address.Zip = orderDto.ShippingAddress.Zip;
-                    user.Address.Country = orderDto.ShippingAddress.Country;
-                }
+                    user.Address = address;
+                // }
+                // else
+                // {
+                //     // Update existing address
+                //     user.Address.FullName = orderDto.ShippingAddress.FullName;
+                //     user.Address.Address1 = orderDto.ShippingAddress.Address1;
+                //     user.Address.Address2 = orderDto.ShippingAddress.Address2;
+                //     user.Address.City = orderDto.ShippingAddress.City;
+                //     user.Address.State = orderDto.ShippingAddress.State;
+                //     user.Address.Zip = orderDto.ShippingAddress.Zip;
+                //     user.Address.Country = orderDto.ShippingAddress.Country;
+                // }
 
-                _context.Update(user);
+                //_context.Update(user);
             }
             var result = await _context.SaveChangesAsync() > 0;
             if (result)
