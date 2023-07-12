@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Infrastructure.Data.Migrations
 {
-    public partial class OrderEntityUpdated : Migration
+    public partial class PictureEntityUpdated : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -96,7 +96,7 @@ namespace Infrastructure.Data.Migrations
                     ProductType = table.Column<string>(type: "TEXT", nullable: true),
                     ProductBrand = table.Column<string>(type: "TEXT", nullable: true),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PictureUrl = table.Column<string>(type: "TEXT", nullable: false),
+                    PictureUrl = table.Column<string>(type: "TEXT", nullable: true),
                     QuantityInStock = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -288,12 +288,12 @@ namespace Infrastructure.Data.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { 1, "79081fb1-8fda-4040-9b1c-1c5291424f42", "Member", "MEMBER" });
+                values: new object[] { 1, "12e2b355-49b2-4709-b41b-86a6cf93a69d", "Member", "MEMBER" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { 2, "f213cf24-cc6f-4538-b524-08a9737dd969", "Admin", "ADMIN" });
+                values: new object[] { 2, "a7772eb9-2f5e-486b-83dd-15ed867f970c", "Admin", "ADMIN" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

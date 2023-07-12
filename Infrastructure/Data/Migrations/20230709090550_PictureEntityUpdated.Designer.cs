@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ProductContext))]
-    [Migration("20230703062359_OrderEntityUpdated")]
-    partial class OrderEntityUpdated
+    [Migration("20230709090550_PictureEntityUpdated")]
+    partial class PictureEntityUpdated
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -120,7 +120,6 @@ namespace Infrastructure.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PictureUrl")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("Price")
@@ -170,14 +169,14 @@ namespace Infrastructure.Data.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "79081fb1-8fda-4040-9b1c-1c5291424f42",
+                            ConcurrencyStamp = "12e2b355-49b2-4709-b41b-86a6cf93a69d",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "f213cf24-cc6f-4538-b524-08a9737dd969",
+                            ConcurrencyStamp = "a7772eb9-2f5e-486b-83dd-15ed867f970c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });

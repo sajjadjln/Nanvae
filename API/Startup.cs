@@ -37,6 +37,7 @@ namespace API
                 options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
             });
             services.AddControllers();
+            services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddApplicationServices();
             services.AddSwaggerDocumentation();
