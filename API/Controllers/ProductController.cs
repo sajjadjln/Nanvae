@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Cryptography.X509Certificates;
+using API.Services;
 
 namespace API.Controllers
 {
@@ -23,9 +24,11 @@ namespace API.Controllers
         private readonly ProductContext _context;
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
+        private readonly ImageService _imageService;
 
-        public ProductController(ProductContext context, IProductRepository productRepository, IMapper mapper)
+        public ProductController(ProductContext context, IProductRepository productRepository, IMapper mapper, ImageService imageService)
         {
+            _imageService = imageService;
             _context = context;
             _productRepository = productRepository;
             _mapper = mapper;
@@ -68,9 +71,17 @@ namespace API.Controllers
         }
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<Product>> CreateProduct(CreateProductDto productDto)
+        public async Task<ActionResult<Product>> CreateProduct([FromForm] CreateProductDto productDto)
         {
             var product = _mapper.Map<Product>(productDto);
+            if (productDto.File != null)
+            {
+                var uploadResult = await _imageService.AddImageAsync(productDto.File);
+                if (uploadResult.Error != null) return BadRequest(
+                    new ProblemDetails { Title = "Error", Detail = uploadResult.Error.Message });
+                product.PictureUrl = uploadResult.SecureUrl.ToString();
+                product.publicId = uploadResult.PublicId;
+            }
             _context.Products.Add(product);
             var result = await _context.SaveChangesAsync() > 0;
             if (result) return CreatedAtAction("GetProduct", new { id = product.Id }, product);
@@ -78,15 +89,27 @@ namespace API.Controllers
         }
         [Authorize(Roles = "Admin")]
         [HttpPut]
-        public async Task<ActionResult> UpdateProduct(UpdateProductDto productDto)
+        public async Task<ActionResult> UpdateProduct([FromForm]UpdateProductDto productDto)
         {
             var product = await _context.Products.FindAsync(productDto.Id);
             if (product == null) return NotFound();
 
-            _mapper.Map(productDto,product);
+            _mapper.Map(productDto, product);
+            if (productDto.File != null)
+            {
+                var uploadResult = await _imageService.AddImageAsync(productDto.File);
+                if (uploadResult.Error != null) return BadRequest(
+                    new ProblemDetails { Title = "Error", Detail = uploadResult.Error.Message });
+
+                if (!string.IsNullOrEmpty(product.publicId))
+                    await _imageService.DeleteImageAsync(product.publicId);
+
+                product.PictureUrl = uploadResult.SecureUrl.ToString();
+                product.publicId = uploadResult.PublicId;
+            }
             var result = await _context.SaveChangesAsync() > 0;
-            if (result) return NoContent();
-            return BadRequest(new ProblemDetails{Title="problem updating product"});
+            if (result) return Ok(product);
+            return BadRequest(new ProblemDetails { Title = "problem updating product" });
         }
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
@@ -96,11 +119,14 @@ namespace API.Controllers
 
             if (product == null) return NotFound();
 
+            if (!string.IsNullOrEmpty(product.publicId))
+                await _imageService.DeleteImageAsync(product.publicId);
+
             _context.Products.Remove(product);
             var result = await _context.SaveChangesAsync() > 0;
 
             if (result) return Ok();
-            return BadRequest(new ProblemDetails{Title="problem deleting product"});
+            return BadRequest(new ProblemDetails { Title = "problem deleting product" });
         }
     }
 }

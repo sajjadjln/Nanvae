@@ -13,12 +13,14 @@ namespace API.Dtos
         public string Name { get; set; }
         [Required]
         public string Description { get; set; }
+        [Required]
         public string ProductType { get; set; }
         [Required]
         public string ProductBrand { get; set; }
         [Required]
         [Range(0.10, double.PositiveInfinity)]
         public Decimal Price { get; set; }
+        [Required]
         public IFormFile File { get; set; }
         [Required]
         [Range(0, 200)]
