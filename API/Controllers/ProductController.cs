@@ -89,27 +89,33 @@ namespace API.Controllers
         }
         [Authorize(Roles = "Admin")]
         [HttpPut]
-        public async Task<ActionResult> UpdateProduct([FromForm]UpdateProductDto productDto)
+        public async Task<ActionResult<Product>> UpdateProduct([FromForm]UpdateProductDto productDto)
         {
             var product = await _context.Products.FindAsync(productDto.Id);
+
             if (product == null) return NotFound();
 
             _mapper.Map(productDto, product);
+
             if (productDto.File != null)
             {
-                var uploadResult = await _imageService.AddImageAsync(productDto.File);
-                if (uploadResult.Error != null) return BadRequest(
-                    new ProblemDetails { Title = "Error", Detail = uploadResult.Error.Message });
+                var imageUploadResult = await _imageService.AddImageAsync(productDto.File);
 
-                if (!string.IsNullOrEmpty(product.publicId))
+                if (imageUploadResult.Error != null) 
+                    return BadRequest(new ProblemDetails { Title = imageUploadResult.Error.Message });
+
+                if (!string.IsNullOrEmpty(product.publicId)) 
                     await _imageService.DeleteImageAsync(product.publicId);
 
-                product.PictureUrl = uploadResult.SecureUrl.ToString();
-                product.publicId = uploadResult.PublicId;
+                product.PictureUrl = imageUploadResult.SecureUrl.ToString();
+                product.publicId = imageUploadResult.PublicId;
             }
+
             var result = await _context.SaveChangesAsync() > 0;
+
             if (result) return Ok(product);
-            return BadRequest(new ProblemDetails { Title = "problem updating product" });
+
+            return BadRequest(new ProblemDetails { Title = "Problem updating product" });
         }
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]

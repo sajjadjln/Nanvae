@@ -34,7 +34,7 @@ namespace API
         {
             services.AddDbContext<ProductContext>(options =>
             {
-                options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
+                options.UseNpgsql(_config.GetConnectionString("DefaultConnection"));
             });
             services.AddControllers();
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
@@ -82,7 +82,8 @@ namespace API
             //app.UseHttpsRedirection();
 
             app.UseRouting();
-            app.UseStaticFiles(); // for the images
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:3000"));
             app.UseAuthentication();
             app.UseAuthorization();
@@ -90,6 +91,7 @@ namespace API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapFallbackToController("Index", "Fallback");
             });
             //          app.UseMiddleware<NotFoundMiddleware>();
         }

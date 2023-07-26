@@ -1,6 +1,7 @@
 import { Box } from '@mui/material';
 import { Typography } from '@mui/material'
 import { Pagination } from '@mui/material';
+import { useState } from 'react';
 
 export default function AppPagination({ metaData, onPageChange }) {
     if (!metaData) {
@@ -8,6 +9,13 @@ export default function AppPagination({ metaData, onPageChange }) {
     }
 
     const { currentPage, totalPages, totalCount, pageSize } = metaData;
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const [pageNumber,setPageNumber] = useState(currentPage);
+
+    function handlePageChange(page){
+        setPageNumber(page);
+        onPageChange(page);
+    }
 
     return (
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -19,8 +27,8 @@ export default function AppPagination({ metaData, onPageChange }) {
           color="secondary"
           size="large"
           count={totalPages}
-          page={currentPage}
-          onChange={(e, page) => onPageChange(page)}
+          page={pageNumber}
+          onChange={(e, page) => handlePageChange(page)}
         />
       </Box>
     );

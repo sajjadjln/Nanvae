@@ -4,7 +4,7 @@ import { PaginatedResponse } from '../models/pagination';
 import { store } from '../store/configureStore';
 
 
-axios.defaults.baseURL = 'http://localhost:5002/api/';
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 axios.defaults.withCredentials = true;
 const responseBody = (response) => response.data;
 
@@ -17,12 +17,12 @@ axios.interceptors.request.use((config) => {
 });
 axios.interceptors.response.use(
   (response) => {
-    return new Promise((resolve) => setTimeout(() => resolve(response), 500))
+    if(process.env.NODE_ENV === 'development')
+      return new Promise((resolve) => setTimeout(() => resolve(response), 500))
       .then((response) => {
         const pagination = response.headers['pagination'];
         if (pagination) {
           response.data = new PaginatedResponse(response.data, JSON.parse(pagination));
-          console.log(response);
         }
         return response;
       });
