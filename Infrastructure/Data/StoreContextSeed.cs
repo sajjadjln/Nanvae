@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Core.Entities;
 using Microsoft.AspNetCore.Identity;
+using System.IO;
+using System.Reflection;
 
 namespace Infrastructure.Data
 {
@@ -15,6 +17,7 @@ namespace Infrastructure.Data
         {
             try
             {
+                var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 if (!userManager.Users.Any())
                 {
                     var user = new User()
@@ -35,7 +38,7 @@ namespace Infrastructure.Data
                 }
                 if (!context.Products.Any())
                 {
-                    var productsData = await System.IO.File.ReadAllTextAsync("../Infrastructure/Data/SeedData/products.json");
+                    var productsData = await System.IO.File.ReadAllTextAsync(path + @"/Data/SeedData/products.json");
                     var products = JsonSerializer.Deserialize<List<Product>>(productsData);
                     foreach (var item in products)
                     {

@@ -16,21 +16,22 @@ namespace API.Services
         public ImageService(IConfiguration config)
         {
             _config = config;
+            var cloudinaryConfig = _config.GetSection("Cloudinary");
             var acc = new Account
             (
-                _config["Cloudinary:CloudName"],
-                _config["Cloudinary:ApiKey"],
-                _config["Cloudinary:ApiSecret"]
+                cloudinaryConfig["CloudName"],
+                cloudinaryConfig["ApiKey"],
+                cloudinaryConfig["ApiSecret"]
             );
             _cloudinary = new Cloudinary(acc);
-
         }
+
         public async Task<ImageUploadResult> AddImageAsync(IFormFile file)
         {
             var uploadResult = new ImageUploadResult();
-            if(file.Length > 0)
+            if (file.Length > 0)
             {
-                using(var stream = file.OpenReadStream())
+                using (var stream = file.OpenReadStream())
                 {
                     var uploadParams = new ImageUploadParams
                     {

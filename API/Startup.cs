@@ -52,24 +52,24 @@ namespace API
                 }
                 else
                 {
-                  //   Use connection string provided at runtime by Heroku.
+                    //   Use connection string provided at runtime by Heroku.
                     var connUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
                     // Parse connection URL to connection string for Npgsql
-                   /* connUrl = connUrl.Replace("postgres://", string.Empty);
-                    var pgUserPass = connUrl.Split("@")[0];
-                    var pgHostPortDb = connUrl.Split("@")[1];
-                    var pgHostPort = pgHostPortDb.Split("/")[0];
-                    var pgDb = pgHostPortDb.Split("/")[1];
-                    var pgUser = pgUserPass.Split(":")[0];
-                    var pgPass = pgUserPass.Split(":")[1];
-                    var pgHost = pgHostPort.Split(":")[0];
-                    var pgPort = pgHostPort.Split(":")[1];*/
+                    /* connUrl = connUrl.Replace("postgres://", string.Empty);
+                     var pgUserPass = connUrl.Split("@")[0];
+                     var pgHostPortDb = connUrl.Split("@")[1];
+                     var pgHostPort = pgHostPortDb.Split("/")[0];
+                     var pgDb = pgHostPortDb.Split("/")[1];
+                     var pgUser = pgUserPass.Split(":")[0];
+                     var pgPass = pgUserPass.Split(":")[1];
+                     var pgHost = pgHostPort.Split(":")[0];
+                     var pgPort = pgHostPort.Split(":")[1];*/
 
-                   // connStr = $"Server={pgHost};Port={pgPort};User Id={pgUser};Password={pgPass}; Database={pgDb}";
-                    connStr = $"Server=store-pr; Port=5432; User Id=root; Password=; Database=store-pr";
+                    // connStr = $"Server={pgHost};Port={pgPort};User Id={pgUser};Password={pgPass}; Database={pgDb}";
+                    connStr = $"Server=store-pr; Port=5432; User Id=root; Password=1j5ZIzdo0J2qM8ZiF12taNt8; Database=store-pr";
                 }
-                    options.UseNpgsql(connStr);
+                options.UseNpgsql(connStr);
                 // Whether the connection string came from the local development configuration file
                 // or from the environment variable from Heroku, use it to set up your DbContext.
                 //options.UseNpgsql(connStr);
@@ -94,13 +94,21 @@ namespace API
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
+                    string tokenKey = _config["TokenKey"]; // Retrieve the configuration value
+
+                    if (string.IsNullOrEmpty(tokenKey))
+                    {
+                        throw new InvalidOperationException("JWT TokenKey configuration value is null or empty.");
+                    }
+
+                    // Use the tokenKey in the configuration
                     options.TokenValidationParameters = new TokenValidationParameters()
                     {
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey =
-                            new SymmetricSecurityKey(Encoding.UTF8
-                                .GetBytes(_config["JWTSettings:TokenKey"])),
-                        ValidIssuer = _config["TokenIssuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey)),
+                        // IssuerSigningKey =
+                        //     new SymmetricSecurityKey(Encoding.UTF8
+                        //         .GetBytes(_config["JWTSettings:TokenKey"])),
                         ValidateIssuer = false,
                         ValidateAudience = false,
                         ValidateLifetime = true
