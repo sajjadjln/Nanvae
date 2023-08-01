@@ -131,7 +131,8 @@ namespace API
             app.UseRouting();
             app.UseDefaultFiles();
             app.UseStaticFiles();
-            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:3000"));
+            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("https://nanvae.iran.liara.run", "http://localhost:3000"));
+
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseSwaggerDocumentation();
