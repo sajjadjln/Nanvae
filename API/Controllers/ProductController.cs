@@ -5,7 +5,7 @@ using Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Core.Interfaces;
 using AutoMapper;
-using System.Text.Json;
+using System. Text.Json;
 using API.RequestHelpers;
 using API.Dtos;
 using API.Errors;
@@ -36,18 +36,30 @@ namespace API.Controllers
 
         [HttpGet]
         public async Task<ActionResult<PagedList<Product>>> GetProducts(
-           [FromQuery] ProductParams productParams)
+            [FromQuery] ProductParams productParams)
         {
             var query = await _productRepository.GetProductsAsync(
                 productParams.OrderBy, productParams.SearchTerm, productParams.Brands, productParams.Types);
 
             var productsToReturn = _mapper.Map<
                 IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(query.ToList());
-            var products = PagedList<ProductToReturnDto>.ToPagedList(productsToReturn.AsQueryable(),
-                productParams.PageNumber, productParams.PageSize);
-            Response.AddPaginationHeader(products.MetaData);
-            return Ok(products);
+
+            // Check if PageNumber and PageSize are provided
+            if (productParams.PageNumber == null && productParams.PageSize == null)
+            {
+                // If not provided, return all products
+                return Ok(productsToReturn);
+            }
+            else
+            {
+                // If provided, return the paginated products
+                var products = PagedList<ProductToReturnDto>.ToPagedList(productsToReturn.AsQueryable(),
+                    productParams.PageNumber ?? 1, productParams.PageSize ?? 6);
+                Response.AddPaginationHeader(products.MetaData);
+                return Ok(products);
+            }
         }
+
 
         [HttpGet("{id}", Name = "GetProduct")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -89,7 +101,7 @@ namespace API.Controllers
         }
         [Authorize(Roles = "Admin")]
         [HttpPut]
-        public async Task<ActionResult<Product>> UpdateProduct([FromForm]UpdateProductDto productDto)
+        public async Task<ActionResult<Product>> UpdateProduct([FromForm] UpdateProductDto productDto)
         {
             var product = await _context.Products.FindAsync(productDto.Id);
 
@@ -101,10 +113,10 @@ namespace API.Controllers
             {
                 var imageUploadResult = await _imageService.AddImageAsync(productDto.File);
 
-                if (imageUploadResult.Error != null) 
+                if (imageUploadResult.Error != null)
                     return BadRequest(new ProblemDetails { Title = imageUploadResult.Error.Message });
 
-                if (!string.IsNullOrEmpty(product.publicId)) 
+                if (!string.IsNullOrEmpty(product.publicId))
                     await _imageService.DeleteImageAsync(product.publicId);
 
                 product.PictureUrl = imageUploadResult.SecureUrl.ToString();

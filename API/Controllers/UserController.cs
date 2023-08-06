@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    [Authorize(Roles = "Admin")] // Assuming "Admin" is the role allowed to manage users
+    [Authorize(Roles = "Admin")]
     public class UserController : BaseController
     {
         private readonly UserManager<User> _userManager;
@@ -33,7 +33,8 @@ namespace API.Controllers
             var userDtos = users.Select(u => new PanelUserDto()
             {
                 Email = u.Email,
-                UserName = u.UserName
+                UserName = u.UserName,
+                Id = u.Id
             }).ToList();
 
             return userDtos;
@@ -50,7 +51,7 @@ namespace API.Controllers
             {
                 Email = user.Email,
                 UserName = user.UserName,
-                // Include any other properties you want to expose in the DTO
+                Id = user.Id
             };
 
             return userDto;
