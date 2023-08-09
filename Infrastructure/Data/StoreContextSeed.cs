@@ -33,8 +33,15 @@ namespace Infrastructure.Data
                         UserName = "admin",
                         Email = "admin@user.com"
                     };
+                    var owner = new User()
+                    {
+                        UserName = "owner",
+                        Email = "owner@user.com"
+                    };
                     await userManager.CreateAsync(admin,"Pa$$w0rd");
+                    await userManager.CreateAsync(owner,"Pa$$w0rd");
                     await userManager.AddToRolesAsync(admin, new[]{"Member","Admin"});
+                    await userManager.AddToRolesAsync(owner, new[]{"Member","Admin","Owner"});
                 }
                 if (!context.Products.Any())
                 {

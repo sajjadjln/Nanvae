@@ -179,16 +179,23 @@ namespace Infrastructure.Data.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "4a1ca808-9126-43cc-b110-9630922eccb6",
+                            ConcurrencyStamp = "9427e4ee-638f-405e-9229-c6ec27917ad3",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "ded3f9b0-fb12-4587-af94-e5c2026fb330",
+                            ConcurrencyStamp = "68db047e-cab7-4ad3-b7fc-c7357cfddea9",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ConcurrencyStamp = "0eec4b53-29ae-4452-91ba-d828d27a5d15",
+                            Name = "Owner",
+                            NormalizedName = "OWNER"
                         });
                 });
 

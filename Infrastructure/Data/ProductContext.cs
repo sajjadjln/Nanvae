@@ -32,8 +32,9 @@ namespace Infrastructure.Data
 
             var memberRole = new Role { Id = 1, Name = "Member", NormalizedName = "MEMBER" };
             var adminRole = new Role { Id = 2, Name = "Admin", NormalizedName = "ADMIN" };
+            var ownerRole = new Role {Id = 3, Name = "Owner", NormalizedName = "OWNER"};
 
-            builder.Entity<Role>().HasData(memberRole, adminRole);
+            builder.Entity<Role>().HasData(memberRole, adminRole, ownerRole);
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
 
