@@ -30,7 +30,7 @@ export default function ProductCard(props) {
         titleTypographyProps={{sx:{fontWeight: "bold" ,color: "primary.main" }}}
       />
       <CardMedia
-        sx={{ height: 140, backgroundSize: "contain" ,bgcolor: "primary.light"}}
+        sx={{ height: 140, backgroundSize: "contain" ,bgcolor: "white"}}
         image={props.product.pictureUrl}
         title={props.product.name}
       />

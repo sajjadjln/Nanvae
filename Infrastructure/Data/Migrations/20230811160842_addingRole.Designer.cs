@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ProductContext))]
-    [Migration("20230809071649_addingRole")]
+    [Migration("20230811160842_addingRole")]
     partial class addingRole
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -181,21 +181,21 @@ namespace Infrastructure.Data.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "9427e4ee-638f-405e-9229-c6ec27917ad3",
+                            ConcurrencyStamp = "3ef224a1-ceb3-4586-83ee-57afd4a7639f",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "68db047e-cab7-4ad3-b7fc-c7357cfddea9",
+                            ConcurrencyStamp = "9f1ec2f6-3a9d-44c3-97c4-6ade3b153733",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = 3,
-                            ConcurrencyStamp = "0eec4b53-29ae-4452-91ba-d828d27a5d15",
+                            ConcurrencyStamp = "01fb341a-e6f6-4c84-9beb-79b990f58532",
                             Name = "Owner",
                             NormalizedName = "OWNER"
                         });

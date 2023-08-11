@@ -292,9 +292,9 @@ namespace Infrastructure.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { 1, "9427e4ee-638f-405e-9229-c6ec27917ad3", "Member", "MEMBER" },
-                    { 2, "68db047e-cab7-4ad3-b7fc-c7357cfddea9", "Admin", "ADMIN" },
-                    { 3, "0eec4b53-29ae-4452-91ba-d828d27a5d15", "Owner", "OWNER" }
+                    { 1, "3ef224a1-ceb3-4586-83ee-57afd4a7639f", "Member", "MEMBER" },
+                    { 2, "9f1ec2f6-3a9d-44c3-97c4-6ade3b153733", "Admin", "ADMIN" },
+                    { 3, "01fb341a-e6f6-4c84-9beb-79b990f58532", "Owner", "OWNER" }
                 });
 
             migrationBuilder.CreateIndex(
